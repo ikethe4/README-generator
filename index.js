@@ -1,7 +1,8 @@
 const inquirer = require("inquirer");
-const generate = require("./utils/generateMarkdown.js");
+const generateMarkdown = require("./develop/utils/generateMarkdown");
 const fs = require("fs");
-
+const util = require("util");
+const writeFileAsync = util.promisify(fs.writeFile);
 // array of questions for user
 const questions = ["What is the title of this project?", "What does this project do?", "What are the installation instructions?", "Who contributed to this project", "What are the test instructions?", "How is this to be used?"
 ];
@@ -9,14 +10,14 @@ const questions = ["What is the title of this project?", "What does this project
 const license = ["license1", "license2", "license3"]
 
 // function to write README file
-function writeToFile(data) {
-    fs.writeFile("README.md", generate(data))
-};
+// function writeToFile(data) {
+//     fs.writeFile("README.md", generate(data))
+// };
 
 
 // function to initialize program
-function init() {
-    inquirer.prompt([
+async function init() {
+   const data = await inquirer.prompt([
         {
             type: "input",
             message: questions[0],
@@ -50,12 +51,11 @@ function init() {
         },
 
 
-    ]).then(function(data){
+    ])
         console.log(data)
-    })
-        
+        // writeToFile("README2", generateMarkdown(data))
+        writeFileAsync("README2.md", generateMarkdown(data))
 }
 
 // function call to initialize program
 init();
-

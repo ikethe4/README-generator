@@ -2,12 +2,12 @@ const inquirer = require("inquirer");
 const generateMarkdown = require("./develop/utils/generateMarkdown");
 const fs = require("fs");
 const util = require("util");
-const writeFileAsync = util.promisify(fs.writeFile);
+const writeFile = util.promisify(fs.writeFile);
 // array of questions for user
-const questions = ["What is the title of this project?", "What does this project do?", "What are the installation instructions?", "Who contributed to this project", "What are the test instructions?", "How is this to be used?"
+const questions = ["What is the title of this project?", "What does this project do?", "What is the installation instructions?  Any needed dependencies?", "Who contributed to this project", "What are the instructions to test this project?", "How is this to be used?"
 ];
 
-const license = ["license1", "license2", "license3"]
+const license = ["Apache-License-2.0", "BSD-3-Clause", "BSD-2-Clause", "GNU-General-Public-License-(GPL)", "GNU-Library-General-Public License-(LGPL)", "MIT-license", "Mozilla-Public-License-2.0", "Common-Development-and-Distribution-License", "Eclipse-Public-Licenseversion-2.0"]
 
 // function to write README file
 // function writeToFile(data) {
@@ -17,7 +17,8 @@ const license = ["license1", "license2", "license3"]
 
 // function to initialize program
 async function init() {
-   const data = await inquirer.prompt([
+  try {
+    const data = await inquirer.prompt([
         {
             type: "input",
             message: questions[0],
@@ -44,17 +45,20 @@ async function init() {
             message: questions[5],
             name: "instructions"
         }, {
-            type: "checkbox",
+            type: "list",
             message: "What type of license does this have?",
             choices: license,
             name: "license"
-        },
+        }
 
+    ]);  console.log(data)
+    // writeToFile("README2", generateMarkdown(data))
+    writeFile("README2.md", generateMarkdown(data))
 
-    ])
-        console.log(data)
-        // writeToFile("README2", generateMarkdown(data))
-        writeFileAsync("README2.md", generateMarkdown(data))
+  } catch (err){
+      console.log(err)
+  }
+
 }
 
 // function call to initialize program
